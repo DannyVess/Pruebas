@@ -20,7 +20,146 @@
 	<div class="container" style="margin-top: 4%">
 	<h4>Registra Libro</h4>
 	
+	   <div class="container">
+        <form action=" "  id="id_form">
+            <div class="row" style="margin-top: 5%">
+                <!-- Primera columna -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="id_titulo" class="control-label">Titulo</label> <input
+                            class="form-control" type="text" id="id_titulo" name="titulo"
+                            placeholder="Ingrese el Titulo" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="id_anio" class="control-label">Año</label> <input
+                            class="form-control" type="text" id="id_anio" name="anio"
+                            placeholder="Ingrese el año" maxlength="4">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_categoria" class="control-label">Cate&iacute;goria</label>
+                        <select class="form-control" id="id_categoria" name="categoria">
+                            <option value="">[Seleccione]</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Segunda columna -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="id_serie" class="control-label">Serie</label> <input
+                            class="form-control" type="text" id="id_serie" name="serie"
+                            placeholder="Ingrese la serie" maxlength="50">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_tema" class="control-label">Tema</label> <input
+                            class="form-control" type="text" id="id_tema" name="tema"
+                            placeholder="Ingrese el tema" maxlength="10">
+                    </div>
+                    
+
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 2%" align="center">
+                <button id="id_btn_registrar" type="button" class="btn btn-primary">Crear Libro</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document)
+        .ready(
+            function() {
+                $('#id_form')
+                    .bootstrapValidator(
+                        {
+                            message : 'This value is not valid',
+                            feedbackIcons : {
+                                valid : 'glyphicon glyphicon-ok',
+                                invalid : 'glyphicon glyphicon-remove',
+                                validating : 'glyphicon glyphicon-refresh'
+                            },
+                            fields: {
+                                titulo: {
+                                    validators: {
+                                        notEmpty: {
+                                            message: 'El titulo es requerido'
+                                        },
+                                    }
+                                },
+                                anio: {
+                                    validators: {
+                                        notEmpty: {
+                                            message: 'El año es requerido'
+                                        },
+                                    }
+                                },
+                                serie:{
+                                    selector: "#id_serie",
+                                    validators:{
+                                        notEmpty: {
+                                            message: 'El n° de serie es obligatorio'
+                                        },
+                                    }
+                                },
+                                tema:{
+                                    selector: "#id_tema",
+                                    validators:{
+                                        notEmpty: {
+                                            message: 'El tema es obligatorio'
+                                        },
+                                    }
+                                },
+
+                                categoria: {
+                                    validators: {
+                                        notEmpty: {
+                                            message: 'Debe seleccionar una categoría'
+                                        }
+                                    }
+                                }
+                            }
+                        });
+            });
+
+    $("#id_btn_registrar").click(function() {
+        var validator = $('#id_form').data('bootstrapValidator');
+        validator.validate();
+
+        if (validator.isValid()) {
+            $.ajax({
+                type: "POST",
+                url: "registraLibro",
+                data: $('#id_form').serialize(),
+                success: function(data){
+                    mostrarMensaje(data.mensaje);
+                    limpiarFormulario();
+                    validator.resetForm();
+                },
+                error: function(){
+                    mostrarMensaje(MSG_ERROR);
+                }
+            });
+        }
+    });
+
+    $.getJSON("cargaCategoria", {}, function(data) {
+        $.each(data, function(index, item) {
+            $("#id_categoria").append("<option value=" +  item.idCategoria +" >" + item.descripcion + "</option>");
+        });
+    });
+
+   function limpiarFormulario() {
+        $('#id_titulo').val('');
+        $('#id_anio').val('');
+        $('#id_serie').val('');
+        $('#id_tema').val('');
+        $('#id_categoria').val('');
+    }
+</script>
 	
-	</div>
 </body>
 </html>
