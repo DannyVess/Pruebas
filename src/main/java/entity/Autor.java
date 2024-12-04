@@ -1,6 +1,7 @@
 package entity;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,15 +10,18 @@ import lombok.Setter;
 @Setter
 public class Autor {
 
-	private int idAutor;
+	private int idAutor;  
 	private String nombres;
 	private String apellidos;
 	private Date fechaNacimiento;
-	private Date fechaActualizacion;
+	private Timestamp  fechaActualizacion;
 	private String telefono;
-	private Date fechaRegistro;
-	private int estado;
+	private Timestamp  fechaRegistro;	
+	private int estado;   //private short estado (para preguntar ? )
+    private int idGrado;
 	private Grado grado;
-	private String FechaNacimientoFormateada;
+	//private String FechaNacimientoFormateada; --profesor este atributo no se encuentra en la bd
+    
+    private String fechaFormateada;
 	
 }

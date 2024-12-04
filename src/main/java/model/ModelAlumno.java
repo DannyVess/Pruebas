@@ -190,5 +190,53 @@ public class ModelAlumno {
 		return lstSalida;
 
 	}
+	
+	//ACA AGREGAMOS EL METODO listaAlumnos
+	
+	public List<Alumno> listaAlumnos() {
+		Connection conn = null;
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
+		List<Alumno> lstSalida = new ArrayList<Alumno>();
+
+		try {
+
+			// 1 Se crea la conexion
+			conn = MySqlDBConexion.getConexion();
+
+			// 2 Se prepara el sql
+			String sql = "SELECT * FROM alumno";
+			pstm = conn.prepareStatement(sql);
+			System.out.println("SQL => " + pstm);
+
+			// 3 Se ejcuta el SQL
+			rs = pstm.executeQuery();
+
+			Alumno objAlumno;
+			while (rs.next()) {
+				objAlumno = new Alumno();
+				objAlumno.setIdAlumno(rs.getInt(1));
+				objAlumno.setNombres(rs.getString(2));
+				objAlumno.setApellidos(rs.getString(3));
+				lstSalida.add(objAlumno);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstm != null)
+					pstm.close();
+				if (conn != null)
+					conn.close();
+			} catch (Exception e2) {
+			}
+		}
+		return lstSalida;
+
+	}
+	
 
 }

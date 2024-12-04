@@ -6,35 +6,33 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-import entity.Sede;
+import entity.Proveedor;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.ModelSede;
+import model.ModelProveedor;
 
-@WebServlet("/cargaComboSede")
-public class CargaComboSedeServlet extends HttpServlet {
-
+@WebServlet("/cargaProveedor")
+public class CargaComboProveedorServlet extends HttpServlet{
+	
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		ModelSede modelSede = new ModelSede();
-		List<Sede> lista = modelSede.lista();
-
-		// convertir a json
+		ModelProveedor modelProveedor = new ModelProveedor();
+		List<Proveedor> lista = modelProveedor.listarProveedores();
+		
+		//2 Se convierte a JSON
 		Gson gson = new Gson();
 		String json = gson.toJson(lista);
 
-		// enviar json al bowser
+		//3 se envía al json al browser
 		resp.setContentType("application/json;charset=UTF-8");
 
 		PrintWriter out = resp.getWriter();
-		out.print(json);
-
+		out.println(json);
 	}
-
 }

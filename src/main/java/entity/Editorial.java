@@ -20,6 +20,6 @@ public class Editorial {
 	private Timestamp fechaActualizacion;
 	private int estado;
 	private Pais pais;
-	private String fechaFormateada;	
+	//private String fechaFormateada;	
 	
 }

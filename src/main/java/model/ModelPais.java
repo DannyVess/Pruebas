@@ -27,6 +27,7 @@ public class ModelPais  {
 			while(rs.next()) {
 				obj = new Pais();
 				obj.setIdPais(rs.getInt(1));
+				obj.setIso(rs.getString(2)); //se agrego
 				obj.setNombre(rs.getString(3));
 				salida.add(obj);
 			}

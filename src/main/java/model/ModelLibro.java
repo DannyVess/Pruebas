@@ -1,40 +1,34 @@
 package model;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-
-import entity.Alumno;
+import entity.Libro;
 import lombok.extern.apachecommons.CommonsLog;
 import util.MySqlDBConexion;
 
 @CommonsLog
 public class ModelLibro {
 
-	public int insertarAlumno(Alumno obj) {
-		Connection conn = null;
-		PreparedStatement pstm = null;
+	public int insertarLibro(Libro obj) {
 		int salida = -1;
+		Connection conn = null;
+		PreparedStatement pstm = null;	
 		try {
-
 			conn = MySqlDBConexion.getConexion();
-			String sql = "insert into alumno values(null,?,?,?,?,?,?,?,?,?,?)";
+			String sql = "insert into libro (idLibro,titulo, anio, serie, tema, "
+            		+ " fechaRegistro, fechaActualizacion,estado, idCategoria ) "
+            		+ " values(null,?,?,?,?,?,?,?,?)";
 			pstm = conn.prepareStatement(sql);
-			pstm.setString(1, obj.getNombres());
-			pstm.setString(2, obj.getApellidos());
-			pstm.setString(3, obj.getTelefono());
-			pstm.setString(4, obj.getDni());
-			pstm.setString(5, obj.getCorreo());
-			pstm.setDate(6, obj.getFechaNacimiento());
-			pstm.setTimestamp(7, obj.getFechaRegistro());
-			pstm.setTimestamp(8, obj.getFechaActualizacion());
-			pstm.setInt(9, obj.getEstado());
-			pstm.setInt(10, obj.getPais().getIdPais());
-
-			System.out.println("SQL => " + pstm);
-
+			pstm.setString(1, obj.getTitulo());
+			pstm.setInt(2, obj.getAnio());
+			pstm.setString(3, obj.getSerie());			
+			pstm.setString(4, obj.getTema());		
+			pstm.setTimestamp(5, obj.getFechaRegistro());
+			pstm.setTimestamp(6, obj.getFechaActualizacion());
+			pstm.setInt(7, obj.getEstado());
+			pstm.setInt(8, obj.getCategoria().getIdCategoria());
 			salida = pstm.executeUpdate();
 
 		} catch (Exception e) {
@@ -51,32 +45,19 @@ public class ModelLibro {
 		return salida;
 	}
 
-	public List<Alumno> listaXNombresIguales(String nombres, String apellidos) {
-		Connection conn = null;
+	public boolean existeTitulo(String titulo) {
+		boolean existe = false;
+		Connection con = null;
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
-		List<Alumno> lstSalida = new ArrayList<Alumno>();
 		try {
-			// 1 Se crea la conexion
-			conn = MySqlDBConexion.getConexion();
-
-			// 2 Se prepara el sql
-			String sql = "SELECT * FROM alumno where nombres = ? and  apellidos  = ?";
-			pstm = conn.prepareStatement(sql);
-			pstm.setString(1, nombres);
-			pstm.setString(2, apellidos);
-			System.out.println("SQL => " + pstm);
-
-			// 3 Se ejcuta el SQL
+			con = MySqlDBConexion.getConexion();
+			String sql = "select * from libro where titulo = ?";
+			pstm = con.prepareStatement(sql);
+			pstm.setString(1, titulo);
 			rs = pstm.executeQuery();
-
-			Alumno objAlumno;
-			while (rs.next()) {
-				objAlumno = new Alumno();
-				objAlumno.setIdAlumno(rs.getInt(1));
-				objAlumno.setNombres(rs.getString(2));
-				lstSalida.add(objAlumno);
-
+			if (rs.next()) {
+				existe = true;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,45 +67,28 @@ public class ModelLibro {
 					rs.close();
 				if (pstm != null)
 					pstm.close();
-				if (conn != null)
-					conn.close();
+				if (con != null)
+					con.close();
 			} catch (Exception e2) {
+				e2.printStackTrace();
 			}
 		}
-		return lstSalida;
+		return existe;
 	}
-
-	public List<Alumno> listaXTelefonoIguales(String telefono) {
-		Connection conn = null;
-
+	
+	public boolean existeSerie(String serie) {
+		boolean existe = false;
+		Connection con = null;
 		PreparedStatement pstm = null;
-
 		ResultSet rs = null;
-
-		List<Alumno> lstSalida = new ArrayList<Alumno>();
-
 		try {
-
-			// 1 Se crea la conexion
-			conn = MySqlDBConexion.getConexion();
-
-			// 2 Se prepara el sql
-			String sql = "SELECT * FROM alumno where telefono = ? ";
-			pstm = conn.prepareStatement(sql);
-			pstm.setString(1, telefono);
-			System.out.println("SQL => " + pstm);
-
-			// 3 Se ejcuta el SQL
+			con = MySqlDBConexion.getConexion();
+			String sql = "select * from libro where serie = ?";
+			pstm = con.prepareStatement(sql);
+			pstm.setString(1, serie);
 			rs = pstm.executeQuery();
-
-			Alumno objAlumno;
-			while (rs.next()) {
-				objAlumno = new Alumno();
-				objAlumno.setIdAlumno(rs.getInt(1));
-				objAlumno.setTelefono(rs.getString(2));
-
-				lstSalida.add(objAlumno);
-
+			if (rs.next()) {
+				existe = true;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -134,45 +98,29 @@ public class ModelLibro {
 					rs.close();
 				if (pstm != null)
 					pstm.close();
-				if (conn != null)
-					conn.close();
+				if (con != null)
+					con.close();
 			} catch (Exception e2) {
+				e2.printStackTrace();
 			}
 		}
-		return lstSalida;
-
+		return existe;
 	}
-
-	public List<Alumno> listaXDNIIguales(String dni) {
-		Connection conn = null;
+	
+	
+	public boolean existeAnio(int anio) {
+		boolean existe = false;
+		Connection con = null;
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
-		List<Alumno> lstSalida = new ArrayList<Alumno>();
-
 		try {
-
-			// 1 Se crea la conexion
-			conn = MySqlDBConexion.getConexion();
-
-			// 2 Se prepara el sql
-			String sql = "SELECT * FROM alumno where dni = ? ";
-
-			pstm = conn.prepareStatement(sql);
-			pstm.setString(1, dni);
-
-			System.out.println("SQL => " + pstm);
-
-			// 3 Se ejcuta el SQL
+			con = MySqlDBConexion.getConexion();
+			String sql = "select * from libro where anio = ?";
+			pstm = con.prepareStatement(sql);
+			pstm.setInt(1, anio);   //setString
 			rs = pstm.executeQuery();
-
-			Alumno objAlumno;
-			while (rs.next()) {
-				objAlumno = new Alumno();
-				objAlumno.setIdAlumno(rs.getInt(1));
-				objAlumno.setDni(rs.getString(2));
-
-				lstSalida.add(objAlumno);
-
+			if (rs.next()) {
+				existe = true;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -182,13 +130,15 @@ public class ModelLibro {
 					rs.close();
 				if (pstm != null)
 					pstm.close();
-				if (conn != null)
-					conn.close();
+				if (con != null)
+					con.close();
 			} catch (Exception e2) {
+				e2.printStackTrace();
 			}
 		}
-		return lstSalida;
-
+		return existe;
 	}
-
+	
+	
+	
 }
